@@ -1,0 +1,17 @@
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\UserService.exe
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\appsettings.Development.json
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\appsettings.json
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\UserService.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\UserService.deps.json
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\UserService.runtimeconfig.json
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\UserService.pdb
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\DnsClient.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\Microsoft.OpenApi.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\MongoDB.Bson.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\MongoDB.Driver.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\SharpCompress.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\Snappier.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\Swashbuckle.AspNetCore.Swagger.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\TebAppMicroservices\UserService\bin\Release\net6.0\publish\ZstdSharp.dll
