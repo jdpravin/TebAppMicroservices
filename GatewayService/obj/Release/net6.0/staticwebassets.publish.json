@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "HB2jjhf483QQ3vjhAk1zFwH66Z6/gYZHHw4pcV9D6HA=",
+  "Source": "GatewayService",
+  "BasePath": "_content/GatewayService",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

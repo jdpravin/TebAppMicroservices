@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TEB Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: #ffffff;
+            width: 480px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            text-align: center;
+            position: relative;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #e53935;
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background-color: #c62828;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #3f51b5;
+            margin-bottom: 6px;
+        }
+
+        .username {
+            font-size: 18px;
+            color: #1c1e21;
+            margin-bottom: 8px;
+        }
+
+        .time {
+            font-size: 13px;
+            color: #606770;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            background: #f0f2f5;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.8;
+            color: #1c1e21;
+        }
+
+        .loading {
+            font-size: 16px;
+            color: #606770;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <button class="logout-btn" onclick="signOut()">Sign Out</button>
+
+    <div class="title">TEB Dashboard</div>
+    <div class="username" id="userText">Welcome</div>
+    <div class="time" id="timeText"></div>
+
+    <div id="info" class="loading">Loading dashboard data...</div>
+</div>
+
+<script>
+/* Username from session */
+const username = sessionStorage.getItem("username");
+document.getElementById("userText").innerText =
+    username ? "Welcome " + username : "Welcome User";
+
+/* Login time */
+const now = new Date();
+document.getElementById("timeText").innerText =
+    "Login time: " + now.toLocaleString();
+
+/* Dashboard data from Gateway */
+fetch("/gateway/api/dashboard-data")
+    .then(r => r.json())
+    .then(d => {
+        document.getElementById("info").innerHTML =
+            `<div class="stats">
+                Total Users : ${d.totalUsers}<br>
+                Total Logins : ${d.totalLogins}
+            </div>`;
+    })
+    .catch(() => {
+        document.getElementById("info").innerText =
+            "Dashboard service is not reachable";
+    });
+
+/* Sign out */
+function signOut() {
+    sessionStorage.clear();
+    window.location.href = "/ui/index.html";
+}
+</script>
+
+</body>
+</html>
