@@ -102,8 +102,8 @@ const now = new Date();
 document.getElementById("timeText").innerText =
     "Login time: " + now.toLocaleString();
 
-/* Dashboard data from Gateway */
-fetch("/gateway/api/dashboard-data")
+/* Dashboard data via Gateway (through Nginx) */
+fetch("/api/dashboard-data")   // ✅ CORRECT
     .then(r => r.json())
     .then(d => {
         document.getElementById("info").innerHTML =
@@ -120,7 +120,7 @@ fetch("/gateway/api/dashboard-data")
 /* Sign out */
 function signOut() {
     sessionStorage.clear();
-    window.location.href = "/ui/index.html";
+    window.location.href = "/";   // ✅ CORRECT
 }
 </script>
 

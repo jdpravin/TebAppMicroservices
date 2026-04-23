@@ -3,20 +3,31 @@ using System.Net.Http.Json;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+/* =====================================================
+   HttpClient for internal service communication
+   ===================================================== */
+
 var httpClient = new HttpClient();
 
-/* ---------- LOGIN VIA GATEWAY ---------- */
+/*
+ Docker service names are used as hostnames:
+ - login  → LoginService container
+ - user   → UserService container
+ */
+
+/* =====================================================
+   LOGIN VIA GATEWAY
+   ===================================================== */
 app.MapPost("/api/login", async (LoginRequest request) =>
 {
     try
     {
         var response = await httpClient.PostAsJsonAsync(
-            "http://localhost/login/login",
+            "http://login:5001/login",
             request
         );
 
-        var result = await response.Content.ReadFromJsonAsync<object>();
-        return Results.Ok(result);
+        return Results.Ok(await response.Content.ReadFromJsonAsync<object>());
     }
     catch
     {
@@ -24,18 +35,19 @@ app.MapPost("/api/login", async (LoginRequest request) =>
     }
 });
 
-/* ---------- SIGNUP VIA GATEWAY ---------- */
+/* =====================================================
+   SIGNUP VIA GATEWAY
+   ===================================================== */
 app.MapPost("/api/signup", async (SignupRequest request) =>
 {
     try
     {
         var response = await httpClient.PostAsJsonAsync(
-            "http://localhost/user/signup",
+            "http://user:5002/signup",
             request
         );
 
-        var result = await response.Content.ReadFromJsonAsync<object>();
-        return Results.Ok(result);
+        return Results.Ok(await response.Content.ReadFromJsonAsync<object>());
     }
     catch
     {
@@ -43,23 +55,24 @@ app.MapPost("/api/signup", async (SignupRequest request) =>
     }
 });
 
-/* ---------- DASHBOARD DATA API ---------- */
+/* =====================================================
+   DASHBOARD DATA (AGGREGATION)
+   ===================================================== */
 app.MapGet("/api/dashboard-data", async () =>
 {
     try
     {
         var users = await httpClient.GetFromJsonAsync<List<UserDto>>(
-            "http://localhost/user/users"
+            "http://user:5002/users"
         );
 
-        var totalUsers = users.Count;
-        var totalLogins = users.Sum(u => u.loginCount);
+        var totalUsers = users?.Count ?? 0;
+        var totalLogins = users?.Sum(u => u.loginCount) ?? 0;
 
         return Results.Ok(new
         {
             totalUsers,
-            totalLogins,
-            status = "Active"
+            totalLogins
         });
     }
     catch
@@ -68,7 +81,9 @@ app.MapGet("/api/dashboard-data", async () =>
     }
 });
 
-/* ---------- HEALTH ---------- */
+/* =====================================================
+   HEALTH CHECK
+   ===================================================== */
 app.MapGet("/health", () =>
 {
     return Results.Ok("GatewayService is running");
@@ -76,7 +91,11 @@ app.MapGet("/health", () =>
 
 app.Run();
 
-/* ---------- MODELS ---------- */
+/* =====================================================
+   MODELS
+   ===================================================== */
+
 record LoginRequest(string username, string password);
 record SignupRequest(string username, string password);
 record UserDto(string username, int loginCount);
+

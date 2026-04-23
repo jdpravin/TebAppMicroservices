@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  login:
+    build: ./LoginService
+    container_name: login-service
+    environment:
+      - MONGO_CONN=mongodb://172.31.17.237:27017
+      - ASPNETCORE_URLS=http://+:5001
+    expose:
+      - "5001"
+    restart: always
+
+  user:
+    build: ./UserService
+    container_name: user-service
+    environment:
+      - MONGO_CONN=mongodb://172.31.17.237:27017
+      - ASPNETCORE_URLS=http://+:5002
+    expose:
+      - "5002"
+    restart: always
+
+  gateway:
+    build: ./GatewayService
+    container_name: gateway-service
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+    expose:
+      - "5000"
+    depends_on:
+      - login
+      - user
+    restart: always
+
+  ui:
+    build: ./UI
+    container_name: ui-service
+    ports:
+      - "80:80"
+    depends_on:
+      - gateway
+    restart: always
+

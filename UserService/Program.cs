@@ -5,23 +5,51 @@ using MongoDB.Bson.Serialization.Attributes;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-/* MongoDB Connection */
-var client = new MongoClient("mongodb://172.31.17.237:27017");
+/* =====================================================
+   MongoDB Configuration (Environment-based)
+   ===================================================== */
+
+// Read MongoDB connection string from environment
+var mongoConn = Environment.GetEnvironmentVariable("MONGO_CONN");
+
+if (string.IsNullOrWhiteSpace(mongoConn))
+{
+    throw new Exception("MongoDB connection string not found. Set MONGO_CONN environment variable.");
+}
+
+// Create MongoDB client
+var client = new MongoClient(mongoConn);
 var database = client.GetDatabase("usersdb");
 var users = database.GetCollection<User>("users");
 
+/* =====================================================
+   APIs
+   ===================================================== */
+
 /* SIGNUP API */
-app.MapPost("/signup", async (User user) =>
+app.MapPost("/signup", async (SignupRequest request) =>
 {
     var existing = await users
-        .Find(x => x.username == user.username)
+        .Find(x => x.username == request.username)
         .FirstOrDefaultAsync();
 
     if (existing != null)
-        return Results.Ok(new { success = false, message = "User exists" });
+    {
+        return Results.Ok(new
+        {
+            success = false,
+            message = "User already exists"
+        });
+    }
 
-    user.loginCount = 0;
-    await users.InsertOneAsync(user);
+    var newUser = new User
+    {
+        username = request.username,
+        password = request.password,
+        loginCount = 0
+    };
+
+    await users.InsertOneAsync(newUser);
 
     return Results.Ok(new { success = true });
 });
@@ -41,12 +69,20 @@ app.MapGet("/users", async () =>
     return Results.Ok(result);
 });
 
-/* Health check */
-app.MapGet("/health", () => Results.Ok("UserService is running"));
+/* HEALTH CHECK */
+app.MapGet("/health", () =>
+{
+    return Results.Ok("UserService is running");
+});
 
 app.Run();
 
-/* MODEL */
+/* =====================================================
+   Models
+   ===================================================== */
+
+record SignupRequest(string username, string password);
+
 [BsonIgnoreExtraElements]
 class User
 {
@@ -58,3 +94,4 @@ class User
     public string password { get; set; } = null!;
     public int loginCount { get; set; }
 }
+

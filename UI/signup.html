@@ -1,7 +1,8 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>TEB Login</title>
+    <meta charset="UTF-8">
+    <title>TEB Signup</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -37,14 +38,14 @@
             margin-bottom: 25px;
         }
 
-        .login-box {
+        .signup-box {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
 
-        .login-box input {
+        .signup-box input {
             width: 100%;
             padding: 12px;
             font-size: 16px;
@@ -54,7 +55,7 @@
             box-sizing: border-box;
         }
 
-        .login-box button {
+        .signup-box button {
             width: 100%;
             padding: 12px;
             font-size: 16px;
@@ -62,25 +63,26 @@
             border-radius: 6px;
             border: none;
             cursor: pointer;
-        }
-
-        .login-btn {
-            background-color: #1877f2;
+            background-color: #42b72a;
             color: white;
             margin-bottom: 12px;
         }
 
-        .login-btn:hover {
-            background-color: #166fe5;
-        }
-
-        .signup-btn {
-            background-color: #42b72a;
-            color: white;
-        }
-
-        .signup-btn:hover {
+        .signup-box button:hover {
             background-color: #36a420;
+        }
+
+        .back-login {
+            display: block;
+            text-align: center;
+            font-size: 14px;
+            color: #1877f2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-login:hover {
+            text-decoration: underline;
         }
 
         @media (max-width: 480px) {
@@ -94,21 +96,22 @@
 <body>
 
 <div class="wrapper">
-    <div class="brand">TEB LOGIN</div>
-    <div class="tagline">Secure access to your dashboard</div>
+    <div class="brand">TEB SIGNUP</div>
+    <div class="tagline">Create your account to access the dashboard</div>
 
-    <div class="login-box">
+    <div class="signup-box">
         <input id="u" placeholder="Username">
         <input id="p" type="password" placeholder="Password">
 
-        <button class="login-btn" onclick="login()">Log In</button>
-        <button class="signup-btn" onclick="goSignup()">Create New Account</button>
+        <button onclick="signup()">Create Account</button>
+
+        <a class="back-login" href="/">← Back to Login</a>
     </div>
 </div>
 
 <script>
-function login() {
-    fetch("/gateway/api/login", {
+function signup() {
+    fetch("/api/signup", {   // ✅ CORRECT
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -119,18 +122,16 @@ function login() {
     .then(r => r.json())
     .then(d => {
         if (d.success) {
-            window.location.href = "/ui/dashboard.html";
+            alert("Signup successful. Please login.");
+            window.location.href = "/";  // ✅ CORRECT
         } else {
-            alert("Invalid username or password");
+            alert(d.message);
         }
     })
     .catch(() => alert("Gateway not reachable"));
-}
-
-function goSignup() {
-    window.location.href = "/ui/signup.html";
 }
 </script>
 
 </body>
 </html>
+
